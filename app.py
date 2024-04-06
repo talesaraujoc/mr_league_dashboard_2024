@@ -152,7 +152,7 @@ app.layout = html.Div([
     dbc.Row([
         dbc.Col([
             dbc.Row([
-                dbc.Col(html.Img(),lg=2),
+                dbc.Col(html.Img(src='assets/LOGOb2.png', height='135px'),lg=2, align='right'),
                 dbc.Col(dbc.Card(card_total_partidas, color="primary", style={"opacity": 0.9}), lg=2),
                 dbc.Col(dbc.Card(card_total_gols, color='secondary', style={"opacity": 0.9}), lg=2),
                 dbc.Col(dbc.Card(card_lider_atual, color='success', style={"opacity": 0.9}), lg=2),
@@ -425,4 +425,4 @@ def update_grafico_perfomance(player):
 
 # Servidor  =================
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
