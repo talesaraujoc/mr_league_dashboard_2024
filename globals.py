@@ -1,14 +1,5 @@
 import pandas as pd
 
-df = pd.read_excel('data/testedatasetv2b.xlsx')
-df_copas = pd.read_excel('data/copas_mr.xlsx')
-df_season = pd.concat([df, df_copas])
-
-df.fillna(0, inplace=True)
-df_copas.fillna(0, inplace=True)
-df_season.fillna(0, inplace=True)
-
-
 # Carregar os critérios de pontuação do arquivo Excel (ou você já pode ter esses valores diretamente no código)
 criterios = {
     'ATA': {'V': 7, 'E': 0, 'D': -4, 'GOL': 7, 'ASS': 4, 'STG': 2, 'GC': -10, 'AMA': -4, 'AZUL': -8, 'VER': -16, 'PP': -10, 'GS': 0, 'DD': 0, 'DP': 0},
@@ -36,11 +27,16 @@ def calcular_pontos(row):
               row['DP'] * criterios[posicao]['DP'])
     return pontos
 
-# Aplicando a função a cada linha do DataFrame
-df['PTS'] = df.apply(calcular_pontos, axis=1)
-df_copas['PTS'] = df_copas.apply(calcular_pontos, axis=1)
-df_season['PTS'] = df_season.apply(calcular_pontos, axis=1)
 
+df = pd.read_excel('data/testedatasetv2b.xlsx')
+df.fillna(0, inplace=True)
+df['PTS'] = df.apply(calcular_pontos, axis=1)
+
+df_copas = pd.read_excel('data/copas_mr.xlsx')
+df_copas.fillna(0, inplace=True)
+
+df_season = pd.concat([df, df_copas])
+df_season.fillna(0, inplace=True)
 
 
 df_corrida_geral = df_season.groupby('PLAYER').agg({'PTS':'sum', 'GOL':'sum', 'ASS':'sum'})
@@ -82,15 +78,13 @@ df_goleiros_gs = df_goleiros_gs.sort_values(by='GS', ascending=True)
 df_goleiros_gs = df_goleiros_gs.reset_index()
 
 df_liga = pd.read_excel('data/testedatasetv2b.xlsx')
+df_liga.fillna(0, inplace=True)
+df_liga['PTS'] = df_liga.apply(calcular_pontos, axis=1)
+
 df_copa = pd.read_excel('data/copas_mr.xlsx')
+df_copa.fillna(0, inplace=True)  
 df_season = pd.concat([df_liga, df_copa])
 
-df_liga.fillna(0, inplace=True)
-df_copa.fillna(0, inplace=True)  
-
-df['PTS'] = df.apply(calcular_pontos, axis=1)
-df_copas['PTS'] = df_copas.apply(calcular_pontos, axis=1)
-df_season['PTS'] = df_season.apply(calcular_pontos, axis=1)
 
 competicoes = df_season['COMPETIÇÃO'].unique()
 lista_rodadas_liga = df_liga['RODADA'].unique()
