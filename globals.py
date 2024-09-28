@@ -88,6 +88,10 @@ df_season = pd.concat([df_liga, df_copa])
 df_liga.fillna(0, inplace=True)
 df_copa.fillna(0, inplace=True)  
 
+df['PTS'] = df.apply(calcular_pontos, axis=1)
+df_copas['PTS'] = df_copas.apply(calcular_pontos, axis=1)
+df_season['PTS'] = df_season.apply(calcular_pontos, axis=1)
+
 competicoes = df_season['COMPETIÇÃO'].unique()
 lista_rodadas_liga = df_liga['RODADA'].unique()
 lista_rodadas_copa = df_copa['RODADA'].unique()
