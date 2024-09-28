@@ -8,6 +8,41 @@ df.fillna(0, inplace=True)
 df_copas.fillna(0, inplace=True)
 df_season.fillna(0, inplace=True)
 
+
+# Carregar os critérios de pontuação do arquivo Excel (ou você já pode ter esses valores diretamente no código)
+criterios = {
+    'ATA': {'V': 7, 'E': 0, 'D': -4, 'GOL': 7, 'ASS': 4, 'STG': 2, 'GC': -10, 'AMA': -4, 'AZUL': -8, 'VER': -16, 'PP': -10, 'GS': 0, 'DD': 0, 'DP': 0},
+    'MEI': {'V': 7, 'E': 0, 'D': -4, 'GOL': 8.5, 'ASS': 5, 'STG': 2.5, 'GC': -10, 'AMA': -4, 'AZUL': -8, 'VER': -16, 'PP': -10, 'GS': 0, 'DD': 0, 'DP': 0},
+    'ZAG': {'V': 7, 'E': 0, 'D': -4, 'GOL': 10, 'ASS': 6, 'STG': 3, 'GC': -10, 'AMA': -4, 'AZUL': -8, 'VER': -16, 'PP': -10, 'GS': 0, 'DD': 0, 'DP': 0},
+    'GK':  {'V': 6, 'E': 0, 'D': -3, 'GOL': 16, 'ASS': 10, 'STG': 4, 'GC': -10, 'AMA': -4, 'AZUL': -8, 'VER': -16, 'PP': -10, 'GS': -5, 'DD': 5, 'DP': 20}
+}
+
+# Função para calcular os pontos com base na posição e nos critérios fornecidos
+def calcular_pontos(row):
+    posicao = row['POSIÇÃO']
+    pontos = (row['V'] * criterios[posicao]['V'] +
+              row['E'] * criterios[posicao]['E'] +
+              row['D'] * criterios[posicao]['D'] +
+              row['GOL'] * criterios[posicao]['GOL'] +
+              row['ASS'] * criterios[posicao]['ASS'] +
+              row['STG'] * criterios[posicao]['STG'] +
+              row['GC'] * criterios[posicao]['GC'] +
+              row['AMA'] * criterios[posicao]['AMA'] +
+              row['AZUL'] * criterios[posicao]['AZUL'] +
+              row['VER'] * criterios[posicao]['VER'] +
+              row['PP'] * criterios[posicao]['PP'] +
+              row['GS'] * criterios[posicao]['GS'] +
+              row['DD'] * criterios[posicao]['DD'] +
+              row['DP'] * criterios[posicao]['DP'])
+    return pontos
+
+# Aplicando a função a cada linha do DataFrame
+df['PTS'] = df.apply(calcular_pontos, axis=1)
+df_copas['PTS'] = df_copas.apply(calcular_pontos, axis=1)
+df_season['PTS'] = df_season.apply(calcular_pontos, axis=1)
+
+
+
 df_corrida_geral = df_season.groupby('PLAYER').agg({'PTS':'sum', 'GOL':'sum', 'ASS':'sum'})
 df_corrida_geral = df_corrida_geral.sort_values(by='PTS', ascending=False)
 df_corrida_geral = df_corrida_geral.reset_index()
